@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRRIII4 MOVIES</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101018;color:white;font-family:Arial,sans-serif}
+header{background:#191923;padding:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:25px;font-weight:bold;color:#ff3434}
+input{padding:12px;border:0;border-radius:8px;width:min(100%,260px)}
+.hero{padding:55px 22px;background:linear-gradient(90deg,#160c20,#64202c);text-align:center}
+.hero h1{font-size:38px;margin:0 0 12px}
+button{padding:10px 16px;border:0;border-radius:7px;background:#ff3434;color:white;cursor:pointer;margin:4px}
+main{padding:22px}
+h2{margin-top:28px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.movies{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:16px}
+.card{background:#20202b;border-radius:12px;overflow:hidden}
+.poster{height:190px;background:linear-gradient(135deg,#552c54,#15152b);display:flex;align-items:center;justify-content:center;font-size:48px}
+.card h3{padding:0 10px;margin-bottom:5px}
+.card p{padding:0 10px;color:#bbb;font-size:13px}
+.card button{margin:8px}
+footer{text-align:center;padding:25px;background:#191923;color:#aaa;margin-top:40px}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">GRRIII4 MOVIES 🎬</div>
+<input id="search" placeholder="Search movies..." oninput="render()">
+</header>
+
+<section class="hero">
+<h1>WELCOME TO GRRIII4 MOVIES</h1>
+<p>Discover movies. Explore entertainment. Enjoy the experience.</p>
+<button onclick="document.getElementById('movies').scrollIntoView()">Explore Movies</button>
+</section>
+
+<main>
+<h2>Movie Categories</h2>
+<div class="filters">
+<button onclick="setCategory('All')">All</button>
+<button onclick="setCategory('Action')">Action</button>
+<button onclick="setCategory('Comedy')">Comedy</button>
+<button onclick="setCategory('Drama')">Drama</button>
+<button onclick="setCategory('Animation')">Animation</button>
+</div>
+
+<h2 id="movies">Popular Movies</h2>
+<div class="movies" id="movieList"></div>
+
+<h2>My Watchlist ❤️</h2>
+<div class="movies" id="watchlist"></div>
+</main>
+
+<footer>
+<p>© 2026 GRRIII4 MOVIES</p>
+<p>Discover your next favourite movie.</p>
+</footer>
+
+<script>
+const movies = [
+{name:"The Dark Knight",genre:"Action",year:2008,icon:"🦇"},
+{name:"Inception",genre:"Action",year:2010,icon:"🌌"},
+{name:"The Mask",genre:"Comedy",year:1994,icon:"🎭"},
+{name:"Home Alone",genre:"Comedy",year:1990,icon:"🏠"},
+{name:"The Pursuit of Happyness",genre:"Drama",year:2006,icon:"⭐"},
+{name:"Interstellar",genre:"Drama",year:2014,icon:"🚀"},
+{name:"Toy Story",genre:"Animation",year:1995,icon:"🧸"},
+{name:"Spider-Man",genre:"Action",year:2002,icon:"🕷️"}
+];
+
+let category="All";
+let saved=[];
+
+function setCategory(c){
+category=c;
+render();
+}
+
+function render(){
+const search=document.getElementById("search").value.toLowerCase();
+const filtered=movies.filter(m=>
+(category==="All"||m.genre===category)&&
+m.name.toLowerCase().includes(search)
+);
+
+document.getElementById("movieList").innerHTML=filtered.map(m=>`
+<div class="card">
+<div class="poster">${m.icon}</div>
+<h3>${m.name}</h3>
+<p>${m.genre} • ${m.year}</p>
+<button onclick="addToWatchlist('${m.name}')">❤️ Save</button>
+</div>`).join("");
+
+document.getElementById("watchlist").innerHTML=saved.map(name=>{
+const m=movies.find(x=>x.name===name);
+return `<div class="card">
+<div class="poster">${m.icon}</div>
+<h3>${m.name}</h3>
+<button onclick="removeMovie('${m.name}')">Remove</button>
+</div>`;
+}).join("");
+}
+
+function addToWatchlist(name){
+if(!saved.includes(name))saved.push(name);
+render();
+}
+
+function removeMovie(name){
+saved=saved.filter(x=>x!==name);
+render();
+}
+
+render();
+</script>
+</body>
+</html>
